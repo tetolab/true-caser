@@ -1,5 +1,6 @@
 import nltk
 
+from gutenberg_adapter import GutenbergAdapter
 from reuters_adapter import ReutersAdapter
 from train_data import training_data_generator
 
@@ -8,7 +9,7 @@ nltk.download('reuters')
 
 corpuses = {
     'reuters': ReutersAdapter,
-    'gutenberg': nltk.corpus.gutenberg
+    'gutenberg': GutenbergAdapter
 }
 
 
@@ -22,6 +23,6 @@ def corpus_generator(corpus):
     return func
 
 
-def corpus_training_data_generator(corpus, sentence_length, batch_size, shift=True):
-    for data in training_data_generator(corpus_generator(corpus), sentence_length, batch_size, shift):
+def corpus_training_data_generator(corpus, sentence_length, batch_size, shift=True, pad=True):
+    for data in training_data_generator(corpus_generator(corpus), sentence_length, batch_size, shift, pad):
         yield data

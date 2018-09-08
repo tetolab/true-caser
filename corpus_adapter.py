@@ -11,3 +11,13 @@ class CorpusAdapter(ABC):
     @abstractmethod
     def raw(id):
         pass
+
+    @staticmethod
+    @abstractmethod
+    def get_train():
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_test():
+        pass
