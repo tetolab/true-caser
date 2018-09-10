@@ -1,5 +1,6 @@
-from more_itertools import flatten, intersperse
 from keras.utils import to_categorical
+from more_itertools import flatten
+
 PADDING = 0
 UNKNOWN = 1
 lowercase_alphabet = 'abcdefghijklmnopqrstuvwxyz'
@@ -21,10 +22,12 @@ def gen_mappings(mode='all'):
     reverse_mapping = {v: k for k, v in mapping.items()}
     return mapping, reverse_mapping
 
+
 def get_all_mappings():
     mapping, reverse_mapping = gen_mappings()
     lower_mapping, lower_reverse_mapping = gen_mappings('lower')
     return mapping, reverse_mapping, lower_mapping, lower_reverse_mapping
+
 
 def map_symbol(mapping, symbol):
     mappings = []
@@ -34,13 +37,15 @@ def map_symbol(mapping, symbol):
             mappings.append(representation)
         else:
             mappings.append(UNKNOWN)
-            
+
     return mappings
+
 
 def map_dataset(mapping, X):
     X = list(map(lambda word: map_symbol(mapping, word), X))
     X = list(flatten(X))
     return X
+
 
 def encode(sentence, mapping):
     encoded_sentence = []

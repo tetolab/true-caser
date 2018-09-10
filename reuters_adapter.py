@@ -1,9 +1,13 @@
 import nltk
-
+import tensorflow as tf
 from corpus_adapter import CorpusAdapter
 
 
 class ReutersAdapter(CorpusAdapter):
+
+    @staticmethod
+    def sents(id=None):
+        pass
 
     @staticmethod
     def fileids():
@@ -24,3 +28,11 @@ class ReutersAdapter(CorpusAdapter):
         ids = [id for id in ReutersAdapter.fileids() if 'test' in id]
         texts = [ReutersAdapter.raw(id) for id in ids]
         return texts
+
+    @staticmethod
+    def get_train_dataset():
+        ids = ReutersAdapter.fileids()
+
+
+
+

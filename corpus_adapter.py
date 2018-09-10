@@ -9,7 +9,12 @@ class CorpusAdapter(ABC):
 
     @staticmethod
     @abstractmethod
-    def raw(id):
+    def raw(id=None):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def sents(id=None):
         pass
 
     @staticmethod

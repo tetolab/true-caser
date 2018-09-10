@@ -13,6 +13,10 @@ _test_files = [
 class GutenbergAdapter(CorpusAdapter):
 
     @staticmethod
+    def sents(id=None):
+        pass
+
+    @staticmethod
     def fileids():
         return nltk.corpus.gutenberg.fileids()
 
