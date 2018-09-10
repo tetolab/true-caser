@@ -10,6 +10,15 @@ all_allowed_symbols = lowercase_alphabet + other_symbols + uppercase_alphabet
 all_lower_allowed_symbols = lowercase_alphabet + other_symbols
 
 
+def gen_label_mappings():
+    mapping = {'UNKNOWN': UNKNOWN, 'PADDING': PADDING}
+    lower_label_mapping = {n: 2 for n in list(all_lower_allowed_symbols)}  
+    upper_label_mapping = {n: 3 for n in list(uppercase_alphabet)}
+
+    all_labels_mapping = {**mapping, **lower_label_mapping, **upper_label_mapping}
+    reverse_mapping = {v: k for k, v in all_labels_mapping.items()}
+    return all_labels_mapping, reverse_mapping
+
 def gen_mappings(mode='all'):
     mapping = {'UNKNOWN': UNKNOWN, 'PADDING': PADDING}
     length_of_initial_mapping = len(mapping)
@@ -22,9 +31,8 @@ def gen_mappings(mode='all'):
     reverse_mapping = {v: k for k, v in mapping.items()}
     return mapping, reverse_mapping
 
-
 def get_all_mappings():
-    mapping, reverse_mapping = gen_mappings()
+    mapping, reverse_mapping = gen_label_mappings()
     lower_mapping, lower_reverse_mapping = gen_mappings('lower')
     return mapping, reverse_mapping, lower_mapping, lower_reverse_mapping
 

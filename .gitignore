@@ -3,5 +3,6 @@ __pycache__/
 .vscode/
 logs/
 lstm-model.h5
+big_lstm.h5
 data/
 !data/README.md
