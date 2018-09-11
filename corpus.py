@@ -4,7 +4,7 @@ import nltk
 
 from brown import BrownAdapter
 from gutenberg_adapter import GutenbergAdapter
-from mappings import encode, get_all_mappings, PADDING
+from mappings import encode, get_all_mappings, PADDING, gen_input_feature_to_int_map, gen_input_feature_to_class_map
 from reuters_adapter import ReutersAdapter
 from train_data import training_data_generator
 import pickle
@@ -80,7 +80,7 @@ def encode_each_sentence(sentences, mapping):
 
 
 def convert_to_numpy_arrays(sentences):
-    return np.asarray(sentences)
+    return np.asarray(sentences, dtype=np.float32)
 
 
 def pad(sentences, sentence_length):
@@ -103,7 +103,8 @@ def convert_to_tensors(encoded_sentences):
 
 
 def create_all_corpus_train_pipeline(sentence_length):
-    mapping, reverse_mapping, lower_mapping, lower_reverse_mapping = get_all_mappings()
+    input_feature_to_int_map = gen_input_feature_to_int_map()
+    input_feature_to_class_map = gen_input_feature_to_class_map()
     y = get_texts()
     y = split_into_sentences(y, sentence_length)
     y = tokenize(y)
@@ -112,8 +113,8 @@ def create_all_corpus_train_pipeline(sentence_length):
 
     y = pad(y, sentence_length)
     x = pad(x, sentence_length)
-    x = encode_each_sentence(x, mapping)
-    y = encode_each_sentence(y, mapping)
+    x = encode_each_sentence(x, input_feature_to_int_map)
+    y = encode_each_sentence(y, input_feature_to_class_map)
 
     # x = convert_to_tensors(x)
     # y = convert_to_tensors(y)
