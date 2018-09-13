@@ -15,9 +15,9 @@ nltk.download('reuters')
 nltk.download('brown')
 
 corpuses = {
-    'reuters': ReutersAdapter,
+    #'reuters': ReutersAdapter,
     'gutenberg': GutenbergAdapter,
-    'brown': BrownAdapter
+    # 'brown': BrownAdapter
 }
 
 
@@ -90,8 +90,9 @@ def pad(sentences, sentence_length):
         if length_diff == 0:
             padded_sentences.append(sentence)
         if length_diff > 0:
-            padded_sentence = [PADDING] * length_diff
-            padded_sentence.extend(sentence)
+            padding = [PADDING] * length_diff
+            padded_sentence = sentence
+            padded_sentence.extend(padding)
             padded_sentences.append(padded_sentence)
         if length_diff < 0:
             padded_sentences.append(sentence[:sentence_length])

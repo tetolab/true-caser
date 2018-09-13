@@ -34,7 +34,7 @@ def gen_mappings(mode='all'):
 
 
 def gen_input_feature_to_int_map():
-    mapping = {'UNKNOWN': UNKNOWN, 'PADDING': PADDING}
+    mapping = {'UNKNOWN': 0, 'PADDING': PADDING}
     length_of_initial_mapping = len(mapping)
     allowed_symbols = all_allowed_symbols
     symbols = sorted(list(set(allowed_symbols)))
@@ -45,10 +45,10 @@ def gen_input_feature_to_int_map():
 
 def gen_input_feature_to_class_map():
     mapping = {'UNKNOWN': UNKNOWN, 'PADDING': PADDING}
-    lower_label_mapping = {n: 2 for n in list(all_lower_allowed_symbols)}
-    upper_label_mapping = {n: 3 for n in list(uppercase_alphabet)}
+    lower_label_mapping = {n: 0 for n in list(all_lower_allowed_symbols)}
+    upper_label_mapping = {n: 1 for n in list(uppercase_alphabet)}
 
-    return {**mapping, **lower_label_mapping, **upper_label_mapping}
+    return {**lower_label_mapping, **upper_label_mapping}
 
 
 def get_all_mappings():
