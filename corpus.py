@@ -1,23 +1,22 @@
 import random
 
 import nltk
-
-from brown import BrownAdapter
-from gutenberg_adapter import GutenbergAdapter
-from mappings import encode, get_all_mappings, PADDING, gen_input_feature_to_int_map, gen_input_feature_to_class_map
-from reuters_adapter import ReutersAdapter
-from train_data import training_data_generator
-import pickle
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
+
+from mappings import encode, PADDING, gen_input_feature_to_int_map, gen_input_feature_to_class_map
+from train_data import training_data_generator
+from wiki import WikiAdapter
+
 nltk.download('gutenberg')
 nltk.download('reuters')
 nltk.download('brown')
 
 corpuses = {
-    #'reuters': ReutersAdapter,
-    'gutenberg': GutenbergAdapter,
-    # 'brown': BrownAdapter
+    # 'reuters': ReutersAdapter,
+    # 'gutenberg': GutenbergAdapter,
+    # 'brown': BrownAdapter,
+    'wiki': WikiAdapter
 }
 
 
@@ -52,7 +51,7 @@ def split_into_sentences(data, sentence_length):
 
 
 def rand_case(c):
-    if random.randint(0, 1) == 1:
+    if random.randint(0, 1) == 1 and c != ' ':
         return c.upper()
     else:
         return c.lower()
@@ -63,6 +62,13 @@ def randomise_casing(sentences):
     for sentence in sentences:
         random_cased_sentences.append([rand_case(c) for c in sentence])
     return random_cased_sentences
+
+
+def lower_casing(sentences):
+    lower_cased_sentences = list()
+    for sentence in sentences:
+        lower_cased_sentences.append([c.lower() for c in sentence])
+    return lower_cased_sentences
 
 
 def tokenize(sentences):
@@ -103,15 +109,15 @@ def convert_to_tensors(encoded_sentences):
     return [tf.convert_to_tensor(sentence) for sentence in encoded_sentences]
 
 
-def create_all_corpus_train_pipeline(sentence_length):
+def create_all_corpus_train_pipeline(sentence_length, type="train"):
     input_feature_to_int_map = gen_input_feature_to_int_map()
     input_feature_to_class_map = gen_input_feature_to_class_map()
-    y = get_texts()
+    y = get_texts(type)
     y = split_into_sentences(y, sentence_length)
     y = tokenize(y)
 
-    x = randomise_casing(y)
-
+    #x = randomise_casing(y)
+    x = lower_casing(y)
     y = pad(y, sentence_length)
     x = pad(x, sentence_length)
     x = encode_each_sentence(x, input_feature_to_int_map)
@@ -124,11 +130,16 @@ def create_all_corpus_train_pipeline(sentence_length):
     return x, y
 
 
-
-def get_texts():
+def get_texts(type):
     texts = list()
     for k, adapter in corpuses.items():
-        train = adapter.get_train()
-        texts.extend(train)
+        if type == 'train':
+            texts.extend(adapter.get_train())
+        elif type == 'validation':
+            texts.extend(adapter.get_validation())
+        elif type == 'test':
+            texts.extend(adapter.get_test())
+        else:
+            raise ValueError("invalid type")
 
     return texts

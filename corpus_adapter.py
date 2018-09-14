@@ -26,3 +26,8 @@ class CorpusAdapter(ABC):
     @abstractmethod
     def get_test():
         pass
+
+    @staticmethod
+    @abstractmethod
+    def get_validation():
+        pass
