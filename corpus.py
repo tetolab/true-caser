@@ -3,7 +3,9 @@ import random
 import nltk
 import numpy as np
 import tensorflow as tf
+from more_itertools import flatten
 
+from case_frequency import generate_weights
 from mappings import encode, PADDING, gen_input_feature_to_int_map, gen_input_feature_to_class_map
 from train_data import training_data_generator
 from wiki import WikiAdapter
@@ -109,17 +111,27 @@ def convert_to_tensors(encoded_sentences):
     return [tf.convert_to_tensor(sentence) for sentence in encoded_sentences]
 
 
+def generate_sample_weights(tokens):
+    weight_map = generate_weights()
+    weights = []
+    for sentence in tokens:
+        weights.append([weight_map.get(token) for token in sentence])
+    return weights
+
+
 def create_all_corpus_train_pipeline(sentence_length, type="train"):
     input_feature_to_int_map = gen_input_feature_to_int_map()
     input_feature_to_class_map = gen_input_feature_to_class_map()
     y = get_texts(type)
     y = split_into_sentences(y, sentence_length)
     y = tokenize(y)
+    w = generate_sample_weights(y)
 
     #x = randomise_casing(y)
     x = lower_casing(y)
     y = pad(y, sentence_length)
     x = pad(x, sentence_length)
+    w = pad(w, sentence_length)
     x = encode_each_sentence(x, input_feature_to_int_map)
     y = encode_each_sentence(y, input_feature_to_class_map)
 
@@ -127,7 +139,9 @@ def create_all_corpus_train_pipeline(sentence_length, type="train"):
     # y = convert_to_tensors(y)
     x = convert_to_numpy_arrays(x)
     y = convert_to_numpy_arrays(y)
-    return x, y
+    w = convert_to_numpy_arrays(w)
+    w = np.nan_to_num(w)
+    return x, y, w
 
 
 def get_texts(type):

@@ -38,7 +38,7 @@ class F1Score(Callback):
 
 
     def on_epoch_end(self, epoch, logs=None):
-        predictions = np.ndarray.flatten(self.model.predict_classes(self.validation_data[0]))
+        predictions = np.ndarray.flatten(self.model.predict_classes(self.validation_data[0], batch_size=512))
         predictions = np.ndarray.astype(predictions, np.int64)
         validation = np.ndarray.flatten(self.validation_data[1])
         validation = np.ndarray.astype(validation, np.int64)
